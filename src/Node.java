@@ -74,4 +74,14 @@ public class Node {
         }
         return res;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Node) {
+            return this.name == ((Node) o).getName();
+        }
+        return false;
+    }
+
 }

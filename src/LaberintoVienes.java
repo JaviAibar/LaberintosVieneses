@@ -39,19 +39,50 @@ public class LaberintoVienes {
     public Node[] getNodes() {
         return nodes;
     }
-//WIP
-//    public int dijkstra(Node start, Node finish) {
-//        int shortestPath = Integer.MAX_VALUE;
-//        int steps;
-//        int size = 0;
-//        Situation[] situations = new Situation[500];
-//
-//
-//
-//        return shortestPath;
-//    }
 
 
+    // This could be a solution without recursivity
+    public int dijkstra(Node start, Node finish) {
+        int shortestPath = Integer.MAX_VALUE;
+        int steps;
+        int size = 0;
+        Situation[] situations = new Situation[500];
+
+
+        return shortestPath;
+    }
+
+    // TODO: Limit the possibility to retorn to the back node
+    // TODO: Detect loops and stop them
+    public Track exploreNode(Node node, Node finish, Track track) {
+        if (node.equals(finish) || track.steps >= 30) {
+           // System.out.println(path+" "+steps);
+            return track;
+        } else {
+            Cross[] crosses = node.getCrosses();
+            Cross[] validCrosses = new Cross[node.getSize()];
+            int routeSteps = Integer.MAX_VALUE;
+            Track trackAux;
+            int size = 0; // size of valid crosses
+            for (int i = 0; i < node.getSize(); i++) {
+                if (crosses[i].getTrafficLightNow(track.steps) < 2 && track.pastNode != crosses[i].getDestination()) {
+                    validCrosses[size] = crosses[i];
+                    size++;
+                }
+            }
+
+            for (int i = 0; i < size; i++) {
+                track.plus();
+                track.pastNode = node;
+                trackAux = exploreNode(validCrosses[i].getDestination(), finish, track);
+                if (routeSteps > trackAux.steps) {
+                    track.addPath(validCrosses[i].getDestination().getName());
+                    track = trackAux;
+                }
+            }
+            return track;
+        }
+    }
 
     @Override
     public String toString() {
@@ -65,19 +96,32 @@ public class LaberintoVienes {
         int casos = lector.nextInt();
         LaberintoVienes laberintoVienes = new LaberintoVienes(casos * 2);
         lector.nextLine();
-        for (int i = 1; i < casos; i++) {
+        for (int i = 0; i < casos; i++) {
             String linea = lector.next();
             Node a = laberintoVienes.getNode(linea.charAt(0));
             Node b = laberintoVienes.getNode(linea.charAt(1));
-            a.add(b, linea.charAt(2));
+            a.add(b, Character.getNumericValue(linea.charAt(2)));
         }
+        lector.nextLine();
         String endPoints = lector.nextLine();
-//        System.out.println(
-//                laberintoVienes.dijkstra(
-//                        laberintoVienes.getNode(endPoints.charAt(0)),
-//                        laberintoVienes.getNode(endPoints.charAt(1))
-//                )
-//        );
-//        System.out.println(laberintoVienes);
+        Track track = new Track(endPoints.charAt(0));
+//        laberintoVienes.showCrosses();
+        System.out.println(
+                laberintoVienes.exploreNode(
+                        laberintoVienes.getNode(endPoints.charAt(0)),
+                        laberintoVienes.getNode(endPoints.charAt(1)),
+                        track
+                )
+        );
+    }
+
+    private void showCrosses() {
+
+        for (int i = 0; i < size; i++) {
+            Cross[] cro = nodes[i].getCrosses();
+            for (int j = 0; j < nodes[i].getSize();j++) {
+                System.out.println("-*-"+cro[j]);
+            }
+        }
     }
 }

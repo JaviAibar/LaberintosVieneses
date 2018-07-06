@@ -39,7 +39,7 @@ public class Cross {
 
     @Override
     public String toString() {
-        String trafficLightStr = "";
+        String trafficLightStr;
         switch (trafficLight) {
             case 0:
                 trafficLightStr = "Green";
@@ -50,6 +50,8 @@ public class Cross {
             case 2:
                 trafficLightStr = "Red";
                 break;
+            default:
+                trafficLightStr = String.valueOf(trafficLight);
         }
         return "The conexión between nodes " + origin.getName() + " and " + destination.getName()
                 + " has/had a traffic light of " + trafficLightStr;
